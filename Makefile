@@ -1,2 +1,2 @@
 build:
-	docker build -t macecchi/osrm-docker .
+	docker build -t macecchi/osrm-rio .
