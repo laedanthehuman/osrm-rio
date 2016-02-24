@@ -16,11 +16,11 @@ echo "Using data container.."
 if [ ! -f $DATA_PATH/$MAP_NAME.osrm ]; then
   if [ ! -f $DATA_PATH/$MAP_NAME.$MAP_EXTENSION ]; then
     echo "Downloading maps..."
-    curl $MAP_LOCATION > $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
+    wget -O $DATA_PATH/$MAP_NAME.$MAP_EXTENSION $MAP_LOCATION || exit 1
     echo "Maps downloaded."
   fi
-  ./osrm-extract -p "profile.lua" $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
-  ./osrm-prepare $DATA_PATH/$MAP_NAME.osrm
+  ./osrm-extract -p "profile.lua" $DATA_PATH/$MAP_NAME.$MAP_EXTENSION && \
+  ./osrm-prepare $DATA_PATH/$MAP_NAME.osrm && \
   rm $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
 fi
 

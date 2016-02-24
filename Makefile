@@ -1,2 +1,2 @@
 build:
-	docker build -t timms/osrm-docker .
+	docker build -t macecchi/osrm-docker .
