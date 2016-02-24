@@ -1,5 +1,8 @@
 #!/bin/bash
 DATA_PATH=${DATA_PATH:="/data"}
+MAP_LOCATION="http://overpass.osm.rambler.ru/cgi/xapi_meta?*[bbox=-43.795060,-23.076347,-43.101608,-22.746120]"
+MAP_NAME="rio"
+MAP_EXTENSION="osm"
 
 _sig() {
   kill -TERM $child 2>/dev/null
@@ -7,32 +10,21 @@ _sig() {
 
 trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
-if [ "$PBF_RESOURCE" != "none" ]; then
-  echo "Using a PBF Resource.."
+echo "Using data container.."
 
-  # Use environment PBF_RESOURCE
-  curl -o /pbf_resource.osm.pbf $PBF_RESOURCE
-
-  ./osrm-extract /pbf_resource.osm.pbf
-  ./osrm-prepare /pbf_resource.osrm
-  ./osrm-routed /pbf_resource.osrm --max-table-size 8000 &
-
-  child=$!
-  wait "$child"
-else
-  echo "Using data container.."
-
-  # Use data container.
-  if [ ! -f $DATA_PATH/$1.osrm ]; then
-    if [ ! -f $DATA_PATH/$1.osm.pbf ]; then
-      curl $2 > $DATA_PATH/$1.osm.pbf
-    fi
-    ./osrm-extract $DATA_PATH/$1.osm.pbf
-    ./osrm-prepare $DATA_PATH/$1.osrm
-    rm $DATA_PATH/$1.osm.pbf
+# Use data container.
+if [ ! -f $DATA_PATH/$MAP_NAME.osrm ]; then
+  if [ ! -f $DATA_PATH/$MAP_NAME.$MAP_EXTENSION ]; then
+    echo "Downloading maps..."
+    curl $MAP_LOCATION > $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
+    echo "Maps downloaded."
   fi
-
-  ./osrm-routed $DATA_PATH/$1.osrm --max-table-size 8000 &
-  child=$!
-  wait "$child"
+  ./osrm-extract -p "profile.lua" $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
+  ./osrm-prepare $DATA_PATH/$MAP_NAME.osrm
+  rm $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
 fi
+
+./osrm-routed $DATA_PATH/$MAP_NAME.osrm --max-table-size 8000 &
+child=$!
+wait "$child"
+
