@@ -1,6 +1,6 @@
 #!/bin/bash
 DATA_PATH=${DATA_PATH:="/data"}
-MAP_LOCATION="http://overpass.osm.rambler.ru/cgi/xapi_meta?*[bbox=-43.795060,-23.076347,-43.101608,-22.746120]"
+MAP_LOCATION="http://overpass-api.de/api/xapi_meta?*[bbox=-43.795060,-23.076347,-43.101608,-22.746120]"
 MAP_NAME="rio"
 MAP_EXTENSION="osm"
 
