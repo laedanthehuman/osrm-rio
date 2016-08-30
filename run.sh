@@ -24,7 +24,7 @@ if [ ! -f $DATA_PATH/$MAP_NAME.osrm ]; then
   rm $DATA_PATH/$MAP_NAME.$MAP_EXTENSION
 fi
 
-./osrm-routed $DATA_PATH/$MAP_NAME.osrm --max-table-size 8000 &
+./osrm-routed $DATA_PATH/$MAP_NAME.osrm --max-table-size 12000 &
 child=$!
 wait "$child"
 
